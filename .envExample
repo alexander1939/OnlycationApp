@@ -1,0 +1,9 @@
+# API Configuration
+BASE_URL=YOUR_API_BASE_URL
+API_KEY=YOUR_API_KEY
+
+# App Configuration
+APP_NAME=Onlycation
+ENVIRONMENT=development
+
+# Add more environment variables as needed
