@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onlycation_app/presentation/screens/auth/login_screen.dart';
 import 'package:onlycation_app/routes/route_names.dart';
+import 'package:onlycation_app/presentation/screens/auth/register_screen.dart';
 
 // Placeholder for the splash screen
 class SplashScreen extends StatelessWidget {
@@ -33,6 +34,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const SplashScreen());
       case AppRouteNames.login:
         return MaterialPageRoute(builder: (_) => const LoginScreen());
+      case AppRouteNames.register:
+        return MaterialPageRoute(builder: (_) => const RegisterScreen());
       case AppRouteNames.home:
         return MaterialPageRoute(builder: (_) => const HomeScreen());
       // Add more routes here

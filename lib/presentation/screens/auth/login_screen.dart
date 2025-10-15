@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../routes/route_names.dart';
 import '../../../core/utils/validators.dart';
@@ -107,6 +106,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                       color: Color(0xFF2D8FA8), width: 2),
                                 ),
                               ),
+                              style: TextStyle(
+                                color: viewModel.emailController.text.isEmpty
+                                    ? Colors.grey
+                                    : Colors.black,
+                              ),
+                              onChanged: (value) {
+                                setState(() {}); // Esto hace que se reconstruya el TextFormField y cambie el color
+                              },
                               validator: Validators.validateEmail,
                             ),
                             const SizedBox(height: 16),
@@ -147,6 +154,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                       color: Color(0xFF2D8FA8), width: 2),
                                 ),
                               ),
+                              style: TextStyle(
+                                color: viewModel.passwordController.text.isEmpty
+                                    ? Colors.grey
+                                    : Colors.black,
+                              ),
+                              onChanged: (value) {
+                                setState(() {}); // Esto hace que se reconstruya el TextFormField y cambie el color
+                              },
                               validator: Validators.validatePassword,
                             ),
                             const SizedBox(height: 12),
@@ -162,9 +177,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                       onChanged: viewModel.toggleRememberMe,
                                       activeColor: const Color(0xFF8ED4BE),
                                     ),
-                                    const Text('Recordarme'),
-                                  ],
-                                ),
+                                    const Text('Recordarme',
+                                    style: TextStyle(
+                                      color: Color(0xFF444444),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
                                 TextButton(
                                   onPressed: () {
                                     // TODO: Navegar a recuperación
@@ -230,38 +251,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
                             const SizedBox(height: 14),
 
-                            // Botón TikTok mejorado
+                            // Botón TikTok
                             OutlinedButton.icon(
                               onPressed: viewModel.isLoading
                                   ? null
                                   : () {
                                       // TODO: Implementar TikTok OAuth
                                     },
-                              icon: Stack(
-                                children: const [
-                                  Positioned(
-                                      left: 1,
-                                      top: 1,
-                                      child: FaIcon(
-                                        FontAwesomeIcons.tiktok,
-                                        color: Colors.cyan,
-                                        size: 20,
-                                      )),
-                                  Positioned(
-                                      right: 1,
-                                      bottom: 1,
-                                      child: FaIcon(
-                                        FontAwesomeIcons.tiktok,
-                                        color: Colors.redAccent,
-                                        size: 20,
-                                      )),
-                                  FaIcon(
-                                    FontAwesomeIcons.tiktok,
-                                    color: Colors.white,
-                                    size: 20,
-                                  ),
-                                ],
-                              ),
+                              icon: const Icon(Icons.music_note, color: Colors.white, size: 20),
                               label: const Text(
                                 'Iniciar sesión con TikTok',
                                 style: TextStyle(
@@ -287,10 +284,17 @@ class _LoginScreenState extends State<LoginScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Text('¿No tienes una cuenta? '),
+                                const Text('¿No tienes una cuenta? ',
+                                style: TextStyle(
+                                  color: Color(0xFF444444),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
                                 TextButton(
                                   onPressed: () {
-                                    // TODO: Ir a registro
+                                    Navigator.pushNamed(
+                                        context, AppRouteNames.register);
                                   },
                                   child: const Text(
                                     'Regístrate',

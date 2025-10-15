@@ -5,10 +5,11 @@ import 'package:dio/dio.dart';
 
 import 'core/theme/app_theme.dart';
 import 'core/constants/app_constants.dart';
-import 'presentation/screens/auth/login_screen.dart';
 import 'data/repositories/auth_repository_impl.dart';
 import 'domain/repositories/auth_repository.dart';
 import 'presentation/viewmodels/auth/login_viewmodel.dart';
+import 'routes/app_router.dart';
+import 'routes/route_names.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -81,7 +82,8 @@ class MyApp extends StatelessWidget {
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
         themeMode: ThemeMode.system,
-        home: const LoginScreen(),
+        onGenerateRoute: AppRouter.generateRoute,
+        initialRoute: AppRouteNames.login,
       ),
     );
   }
