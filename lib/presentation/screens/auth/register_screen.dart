@@ -153,7 +153,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 _obscurePassword
                                     ? Icons.visibility_off_outlined
                                     : Icons.visibility_outlined,
-                                color: const Color(0xFF444444),
+                                color: const Color(0xFF2D8FA8),
                               ),
                               onPressed: () {
                                 setState(() {
@@ -197,7 +197,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 _obscureConfirm
                                     ? Icons.visibility_off_outlined
                                     : Icons.visibility_outlined,
-                                color: const Color(0xFF444444),
+                                color: const Color(0xFF2D8FA8),
                               ),
                               onPressed: () {
                                 setState(() {
@@ -228,7 +228,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           children: [
                             Checkbox(
                               value: _acceptedPrivacy,
-                              activeColor: const Color(0xFF444444),
+                              activeColor: const Color(0xFF2D8FA8),
                               onChanged: (value) {
                                 setState(() {
                                   _acceptedPrivacy = value ?? false;
@@ -272,15 +272,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 }
                               : null,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF2D8FA8),
+                            backgroundColor: const Color(0xFFFF8B63),
                             foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            padding:
+                                    const EdgeInsets.symmetric(vertical: 16),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                                elevation: 4,
                             textStyle: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
                             ),
                             disabledBackgroundColor:
                                 Colors.grey.shade400, // si no acepta privacidad

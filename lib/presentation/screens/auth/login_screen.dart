@@ -92,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 labelStyle: const TextStyle(
                                   color: Color(0xFF444444),
                                 ),
-                                prefixIcon: const Icon(Icons.email_outlined),
+                                prefixIcon: const Icon(Icons.email_outlined, color: Color(0xFF2D8FA8)),
                                 filled: true,
                                 fillColor: const Color(0xFFF7F8F9),
                                 border: OutlineInputBorder(
@@ -127,7 +127,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 labelStyle: const TextStyle(
                                   color: Color(0xFF444444),
                                 ),
-                                prefixIcon: const Icon(Icons.lock_outline),
+                                prefixIcon: const Icon(Icons.lock_outline, color: Color(0xFF2D8FA8)),
                                 suffixIcon: IconButton(
                                   icon: Icon(
                                     _obscurePassword
@@ -251,27 +251,36 @@ class _LoginScreenState extends State<LoginScreen> {
 
                             const SizedBox(height: 14),
 
-                            // Botón TikTok
+                            // Botón LinkedIn
                             OutlinedButton.icon(
                               onPressed: viewModel.isLoading
                                   ? null
                                   : () {
-                                      // TODO: Implementar TikTok OAuth
+                                      // TODO: Implementar LinkedIn OAuth
                                     },
-                              icon: const Icon(Icons.music_note, color: Colors.white, size: 20),
+                              icon: Container(
+                                padding: const EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFE6F0F5), // 🔹 Fondo gris azulado suave
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Image.asset(
+                                  'assets/icons/linkedin.png',
+                                  height: 22,
+                                  width: 22,
+                                ),
+                              ),
                               label: const Text(
-                                'Iniciar sesión con TikTok',
+                                'Iniciar sesión con LinkedIn',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
                               style: OutlinedButton.styleFrom(
-                                backgroundColor: Colors.black,
-                                side: const BorderSide(
-                                    color: Colors.black, width: 1),
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 14),
+                                backgroundColor: const Color(0xFF0077B5), // 🔹 Azul corporativo de LinkedIn
+                                side: const BorderSide(color: Color(0xFF0077B5), width: 1),
+                                padding: const EdgeInsets.symmetric(vertical: 14),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(14),
                                 ),
