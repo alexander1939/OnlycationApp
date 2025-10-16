@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:onlycation_app/presentation/screens/auth/login_screen.dart';
 import 'package:onlycation_app/routes/route_names.dart';
 import 'package:onlycation_app/presentation/screens/auth/register_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:onlycation_app/core/constants/app_constants.dart';
 
-// Placeholder for the splash screen
 class SplashScreen extends StatelessWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
@@ -13,9 +14,39 @@ class SplashScreen extends StatelessWidget {
       body: Center(child: CircularProgressIndicator()),
     );
   }
+
 }
 
-// Placeholder for the home screen
+class _DeepLinkHandlerScreen extends StatefulWidget {
+  final String token;
+  const _DeepLinkHandlerScreen({Key? key, required this.token}) : super(key: key);
+
+  @override
+  State<_DeepLinkHandlerScreen> createState() => _DeepLinkHandlerScreenState();
+}
+
+class _DeepLinkHandlerScreenState extends State<_DeepLinkHandlerScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _handleToken();
+  }
+
+  Future<void> _handleToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(AppConstants.authTokenKey, widget.token);
+    if (!mounted) return;
+    Navigator.pushReplacementNamed(context, AppRouteNames.home);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(child: CircularProgressIndicator()),
+    );
+  }
+}
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -29,6 +60,18 @@ class HomeScreen extends StatelessWidget {
 
 class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
+    // Handle deep link like '/?token=...'
+    final name = settings.name ?? '';
+    try {
+      final uri = Uri.parse(name);
+      final token = uri.queryParameters['token'];
+      if (token != null && token.isNotEmpty) {
+        return MaterialPageRoute(builder: (_) => _DeepLinkHandlerScreen(token: token));
+      }
+    } catch (_) {
+      // ignore malformed uri
+    }
+
     switch (settings.name) {
       case AppRouteNames.splash:
         return MaterialPageRoute(builder: (_) => const SplashScreen());
