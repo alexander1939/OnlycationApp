@@ -188,7 +188,129 @@ lib/presentation/screens/
 
 ## 🔄 API
 
-La aplicación se conecta a una API REST en `http://127.0.0.1:8000/api/`
+- Por defecto, en desarrollo de escritorio puedes usar `http://127.0.0.1:8000/api/`.
+- Para MÓVIL (Android físico), 127.0.0.1 NO funciona. Usa:
+  - IP LAN de tu PC (ej. `http://192.168.x.x:8000/api/`), o
+  - Un túnel público (recomendado): `https://<tu-dominio>.trycloudflare.com/api/`.
+
+Consulta `lib/core/constants/app_constants.dart` para el valor actual de `baseUrl`.
+
+---
+
+## 🔐 Login/Registro con LinkedIn (Móvil) por Deep Link
+
+Este proyecto implementa el flujo OAuth de LinkedIn para móvil usando deep links (`onlycation://auth`).
+
+### Resumen del flujo
+
+1. La app llama a tu backend para obtener `authorization_url`:
+   - Login: `GET /api/auth/linkedin/login?redirect_uri=onlycation://auth`
+   - Registro estudiante: `GET /api/auth/linkedin/register/student?redirect_uri=onlycation://auth`
+2. La app abre el navegador con `authorization_url` (LinkedIn).
+3. LinkedIn redirige a tu backend en el callback público (túnel) `https://<tu-dominio>/api/auth/linkedin/callback`.
+4. El backend intercambia `code -> tokens`, crea/inicia sesión del usuario y redirige a la app:
+   - `onlycation://auth?token=<ACCESS_TOKEN>`
+5. La app captura el deep link, guarda el token y navega a Home.
+
+### Archivos relevantes (App)
+
+- `android/app/src/main/AndroidManifest.xml`
+  - `intent-filter` para `onlycation://auth` y permiso de `INTERNET`.
+- `lib/core/constants/app_constants.dart`
+  - `baseUrl` (pon tu IP LAN o dominio del túnel) y constantes de OAuth.
+- `lib/presentation/viewmodels/auth/login_viewmodel.dart`
+  - Métodos:
+    - `loginWithLinkedInMobile()`
+    - `registerStudentWithLinkedInMobile()`
+  - Usa `flutter_web_auth_2` para abrir LinkedIn y esperar el callback.
+- `lib/presentation/screens/auth/login_screen.dart`
+  - Botón “Iniciar sesión con LinkedIn”.
+- `lib/presentation/screens/auth/register_screen.dart`
+  - Botón “Registrarse con LinkedIn (Estudiante)”.
+- `lib/routes/app_router.dart`
+  - Maneja `"/?token=..."`: guarda token y navega a `AppRouteNames.home`.
+- `lib/main.dart`
+  - Interceptor de `Dio` envía `Authorization: Bearer <token>`.
+
+### Backend (requisitos)
+
+- Servir en red: `uvicorn app:app --host 0.0.0.0 --port 8000`.
+- Variables/config:
+  - `LINKEDIN_REDIRECT_URI = https://<tu-dominio>/api/auth/linkedin/callback`
+  - Registrar ese Redirect URL en LinkedIn Developer Portal.
+- Endpoints mínimos:
+  - `GET /api/auth/linkedin/login` → devuelve `{ authorization_url }` (usar `LINKEDIN_REDIRECT_URI`).
+  - `GET /api/auth/linkedin/register/student` → idem con `state=register:student`.
+  - `GET /api/auth/linkedin/callback` → intercambia `code`, genera tokens y devuelve `RedirectResponse("onlycation://auth?token=<ACCESS_TOKEN>", 307)`.
+
+---
+
+## ☁️ Configuración rápida de Cloudflared (túnel)
+
+Para exponer tu API local al exterior de forma temporal.
+
+### Instalar (Arch Linux)
+
+```bash
+sudo pacman -S cloudflared
+```
+
+### Levantar el túnel hacia tu API local (8000)
+
+```bash
+cloudflared tunnel --url http://localhost:8000
+```
+
+Obtendrás una URL pública tipo:
+
+```
+https://<algo>.trycloudflare.com
+```
+
+Úsala como base de tu API en la app: `https://<algo>.trycloudflare.com/api/`.
+
+### Ajustes en LinkedIn y backend
+
+- En LinkedIn Developer Portal, agrega el Redirect URL:
+  - `https://<algo>.trycloudflare.com/api/auth/linkedin/callback`
+- En tu backend, usa esa misma URL como `LINKEDIN_REDIRECT_URI`.
+
+---
+
+## 🧪 Cómo probar el flujo en Android físico
+
+1. Verifica que ADB detecta el dispositivo:
+   ```bash
+   flutter devices
+   ```
+2. Limpia y ejecuta:
+   ```bash
+   flutter clean
+   flutter pub get
+   flutter run -d <ID_DISPOSITIVO>
+   ```
+3. En la app:
+   - Login: “Iniciar sesión con LinkedIn”
+   - Registro (estudiante): “Registrarse con LinkedIn (Estudiante)”
+4. Completa OAuth en el navegador; el backend redirigirá a `onlycation://auth?token=...` y la app entrará a Home.
+
+---
+
+## 🛠️ Troubleshooting
+
+- **Veo JSON en el navegador al finalizar:** el callback del backend debe hacer `RedirectResponse` al deep link. No devolver JSON.
+- **Se abre el navegador pero no vuelve a la app:** revisa el `intent-filter` (Android), el esquema `onlycation`, y que el backend efectivamente redirige a `onlycation://auth?...`.
+- **El teléfono no alcanza la API:** usa IP LAN o túnel; 127.0.0.1 del PC no sirve en el móvil.
+- **Gradle usa versión vieja (8.9):** actualiza `android/gradle/wrapper/gradle-wrapper.properties` a `8.12-all`, elimina `~/.gradle/wrapper/dists/gradle-8.9-*` y vuelve a ejecutar.
+- **Licencias/NDK:** acepta licencias e instala NDK con `sdkmanager` del SDK en HOME.
+
+---
+
+## 🔒 Notas de seguridad
+
+- Nunca publiques tokens en logs o UI.
+- Firma/valida `state` en OAuth para prevenir CSRF.
+- En producción, usa dominios y certificados gestionados; los túneles son para desarrollo.
 
 ## 📄 Licencia
 

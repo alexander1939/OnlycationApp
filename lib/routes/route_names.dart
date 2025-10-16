@@ -4,11 +4,11 @@ class AppRouteNames {
   static const String splash = '/';
   static const String login = '/login';
   static const String register = '/register';
+  static const String forgotPassword = '/forgot-password';
   
   // Main app routes
   static const String home = '/home';
   static const String profile = '/profile';
   static const String settings = '/settings';
   
-  // Add more routes as needed
 }
