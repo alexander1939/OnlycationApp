@@ -256,12 +256,16 @@ class _LoginScreenState extends State<LoginScreen> {
 
                             const SizedBox(height: 14),
 
-                            // Botón LinkedIn
+                            // Botón LinkedIn (Deep Link - Móvil)
                             OutlinedButton.icon(
                               onPressed: viewModel.isLoading
                                   ? null
-                                  : () {
-                                      // TODO: Implementar LinkedIn OAuth
+                                  : () async {
+                                      final ok = await viewModel.loginWithLinkedInMobile();
+                                      if (!mounted) return;
+                                      if (ok) {
+                                        Navigator.pushReplacementNamed(context, AppRouteNames.home);
+                                      }
                                     },
                               icon: Container(
                                 padding: const EdgeInsets.all(6),

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import '../../viewmodels/auth/login_viewmodel.dart';
+import '../../../routes/route_names.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -288,6 +291,53 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 Colors.grey.shade400, // si no acepta privacidad
                           ),
                           child: const Text('Registrarse'),
+                        ),
+
+                        const SizedBox(height: 14),
+
+                        // Botón de registro con LinkedIn (Estudiante)
+                        Consumer<LoginViewModel>(
+                          builder: (context, viewModel, _) {
+                            return OutlinedButton.icon(
+                              onPressed: viewModel.isLoading
+                                  ? null
+                                  : () async {
+                                      final ok = await viewModel.registerStudentWithLinkedInMobile();
+                                      if (!mounted) return;
+                                      if (ok) {
+                                        Navigator.pushReplacementNamed(context, AppRouteNames.home);
+                                      } else if (viewModel.hasError && viewModel.error != null) {
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(content: Text(viewModel.error!)),
+                                        );
+                                      }
+                                    },
+                              icon: Container(
+                                padding: const EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFFE6F0F5),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Image.asset(
+                                  'assets/icons/linkedin.png',
+                                  height: 22,
+                                  width: 22,
+                                ),
+                              ),
+                              label: const Text(
+                                'Registrarse con LinkedIn (Estudiante)'
+                              ),
+                              style: OutlinedButton.styleFrom(
+                                backgroundColor: const Color(0xFF0077B5),
+                                foregroundColor: Colors.white,
+                                side: const BorderSide(color: Color(0xFF0077B5), width: 1),
+                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(14),
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       ],
                     ),

@@ -30,7 +30,7 @@ void main() async {
       // Add auth token if available
       final token = sharedPreferences.getString(AppConstants.authTokenKey);
       if (token != null && token.isNotEmpty) {
-        options.headers['Authorization'] = 'Token $token';
+        options.headers['Authorization'] = 'Bearer $token';
       }
       return handler.next(options);
     },

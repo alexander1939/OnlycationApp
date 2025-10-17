@@ -41,7 +41,11 @@ endif()
 # of modifying this function.
 function(APPLY_STANDARD_SETTINGS TARGET)
   target_compile_features(${TARGET} PUBLIC cxx_std_14)
-  target_compile_options(${TARGET} PRIVATE -Wall -Werror)
+  # Keep -Werror for strict builds, but do not fail on deprecated literal operator
+  # warnings coming from third-party headers (e.g., json.hpp pulled by some plugins).
+  # The "no-error" flags after -Werror take precedence and will downgrade those
+  # specific diagnostics to warnings so the build can proceed.
+  target_compile_options(${TARGET} PRIVATE -Wall -Werror -Wno-error=deprecated-literal-operator -Wno-error=deprecated-declarations)
   target_compile_options(${TARGET} PRIVATE "$<$<NOT:$<CONFIG:Debug>>:-O3>")
   target_compile_definitions(${TARGET} PRIVATE "$<$<NOT:$<CONFIG:Debug>>:NDEBUG>")
 endfunction()

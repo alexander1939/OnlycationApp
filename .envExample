@@ -6,4 +6,3 @@ API_KEY=YOUR_API_KEY
 APP_NAME=Onlycation
 ENVIRONMENT=development
 
-# Add more environment variables as needed
