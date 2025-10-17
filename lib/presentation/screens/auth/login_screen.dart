@@ -36,6 +36,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const SizedBox(height: 40),
+                    // Botón de información (About Us)
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: IconButton(
+                        icon: const Icon(Icons.info_outline, color: Color(0xFF2D8FA8)),
+                        tooltip: 'About us',
+                        onPressed: () {
+                          Navigator.pushNamed(context, AppRouteNames.about);
+                        },
+                      ),
+                    ),
 
                     // 🦊 Logo y título
                     Column(
