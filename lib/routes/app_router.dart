@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:onlycation_app/presentation/screens/auth/login_screen.dart';
 import 'package:onlycation_app/routes/route_names.dart';
+import 'package:onlycation_app/presentation/screens/about/about_screen.dart';
 import 'package:onlycation_app/presentation/screens/auth/register_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:onlycation_app/core/constants/app_constants.dart';
@@ -81,6 +82,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const RegisterScreen());
       case AppRouteNames.home:
         return MaterialPageRoute(builder: (_) => const HomeScreen());
+      case AppRouteNames.about:
+        return MaterialPageRoute(builder: (_) => const AboutScreen());
       // Add more routes here
       default:
         return MaterialPageRoute(

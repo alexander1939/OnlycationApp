@@ -36,6 +36,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const SizedBox(height: 40),
+                    // Botón de información (About Us)
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: IconButton(
+                        icon: const Icon(Icons.info_outline, color: Color(0xFF2D8FA8)),
+                        tooltip: 'About us',
+                        onPressed: () {
+                          Navigator.pushNamed(context, AppRouteNames.about);
+                        },
+                      ),
+                    ),
 
                     // 🦊 Logo y título
                     Column(
@@ -166,35 +177,40 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             const SizedBox(height: 12),
 
-                            // Recordarme + Olvidaste
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            // Recordarme + Olvidaste (responsive)
+                            Wrap(
+                              alignment: WrapAlignment.spaceBetween,
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              spacing: 12,
+                              runSpacing: 8,
                               children: [
                                 Row(
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Checkbox(
                                       value: viewModel.rememberMe,
                                       onChanged: viewModel.toggleRememberMe,
                                       activeColor: const Color(0xFF8ED4BE),
                                     ),
-                                    const Text('Recordarme',
-                                    style: TextStyle(
-                                      color: Color(0xFF444444),
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                                TextButton(
-                                  onPressed: () {
-                                    // TODO: Navegar a recuperación
-                                  },
-                                  child: const Text(
-                                    '¿Olvidaste tu contraseña?',
-                                    style: TextStyle(
-                                      color: Color(0xFF2D8FA8),
-                                      fontWeight: FontWeight.w500,
+                                    const Text('Recordarme'),
+                                  ],
+                                ),
+                                ConstrainedBox(
+                                  constraints: const BoxConstraints(maxWidth: 260),
+                                  child: TextButton(
+                                    style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                                    onPressed: () {
+                                      // TODO: Navegar a recuperación
+                                    },
+                                    child: const Text(
+                                      '¿Olvidaste tu contraseña?',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      softWrap: false,
+                                      style: TextStyle(
+                                        color: Color(0xFF2D8FA8),
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -207,7 +223,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     const EdgeInsets.only(bottom: 12, top: 4),
                                 child: Text(
                                   viewModel.error!,
-                                  style: const TextStyle(color: Colors.red),
+                                  style: const TextStyle(color: Color.fromARGB(255, 255, 17, 0)),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
