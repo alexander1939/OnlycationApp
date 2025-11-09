@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../../../routes/route_names.dart';
 import '../../../core/utils/validators.dart';
 import '../../viewmodels/auth/login_viewmodel.dart';
@@ -15,6 +16,40 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   bool _obscurePassword = true;
+  NativeAd? _nativeAd;
+  bool _isAdLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadNativeAd();
+  }
+
+  void _loadNativeAd() {
+    final ad = NativeAd(
+      adUnitId: 'ca-app-pub-3940256099942544/2247696110',
+      factoryId: 'adFactoryExample',
+      listener: NativeAdListener(
+        onAdLoaded: (ad) {
+          setState(() {
+            _nativeAd = ad as NativeAd;
+            _isAdLoaded = true;
+          });
+        },
+        onAdFailedToLoad: (ad, error) {
+          ad.dispose();
+        },
+      ),
+      request: const AdRequest(),
+    );
+    ad.load();
+  }
+
+  @override
+  void dispose() {
+    _nativeAd?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: const Color(0xFFFAF9F5),
       body: Container(
         width: double.infinity,
-        height: size.height, // 🔧 Evita la franja negra
+        height: size.height, // 
         color: const Color(0xFFFAF9F5),
         child: SafeArea(
           child: SingleChildScrollView(
@@ -36,6 +71,56 @@ class _LoginScreenState extends State<LoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const SizedBox(height: 40),
+
+                    // Anuncio nativo (AdMob)
+                    if (_isAdLoaded && _nativeAd != null)
+                      Stack(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(bottom: 16),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.06),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 6),
+                                ),
+                              ],
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: SizedBox(
+                                height: 100,
+                                width: double.infinity,
+                                child: AdWidget(ad: _nativeAd!),
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            top: 4,
+                            right: 4,
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(12),
+                                onTap: () {
+                                  setState(() {
+                                    _nativeAd?.dispose();
+                                    _nativeAd = null;
+                                    _isAdLoaded = false;
+                                  });
+                                },
+                                child: const Padding(
+                                  padding: EdgeInsets.all(6.0),
+                                  child: Icon(Icons.close, size: 20, color: Colors.black54),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     // Botón de información (About Us)
                     Align(
                       alignment: Alignment.topRight,
