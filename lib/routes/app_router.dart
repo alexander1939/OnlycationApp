@@ -5,9 +5,46 @@ import 'package:onlycation_app/presentation/screens/about/about_screen.dart';
 import 'package:onlycation_app/presentation/screens/auth/register_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:onlycation_app/core/constants/app_constants.dart';
+import 'package:permission_handler/permission_handler.dart';
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    _init();
+  }
+
+  Future<void> _init() async {
+    // Request storage/media permissions
+    try {
+      final statuses = await <Permission>[
+        Permission.storage,        // Legacy (< API 33)
+        Permission.photos,         // Maps to READ_MEDIA_IMAGES on Android 13+
+        Permission.videos,         // Maps to READ_MEDIA_VIDEO on Android 13+
+        Permission.audio,          // Maps to READ_MEDIA_AUDIO on Android 13+
+        Permission.camera,         // Camera permission
+      ].request();
+
+      // If permanently denied, optionally prompt to open settings
+      final permanentlyDenied = statuses.values.any((s) => s.isPermanentlyDenied);
+      if (permanentlyDenied) {
+        // You can show a dialog; for now, open settings directly
+        await openAppSettings();
+      }
+    } catch (_) {
+      // Ignore and continue
+    }
+
+    if (!mounted) return;
+    Navigator.pushReplacementNamed(context, AppRouteNames.login);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +52,6 @@ class SplashScreen extends StatelessWidget {
       body: Center(child: CircularProgressIndicator()),
     );
   }
-
 }
 
 class _DeepLinkHandlerScreen extends StatefulWidget {
